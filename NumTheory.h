@@ -6,7 +6,7 @@
 #include <set>
 #include <map>
 
-#define hash_map std::unordered_map
+#define HASH_MAP std::unordered_map
 
 template <typename T>
 extern inline T lcm(T a, T b)  // НОК
@@ -55,7 +55,7 @@ extern inline T binpow (T a, T n) // быстрое возведение в ст
 }
 
 template <typename T>
-extern inline std::set<T> del(T a) // разложение числа на делители
+extern inline std::set<T> del(T a) // делители числа
 {
 	std::set<T> ans;
 
@@ -77,9 +77,9 @@ extern inline std::set<T> del(T a) // разложение числа на де�
 }
 
 template <typename T>
-extern inline hash_map<T, int> st_del(T a) // разложение числа на простые
+extern inline HASH_MAP<T, int> st_del(T a) // разложение числа на простые
 {
-	hash_map<T, int> ans;
+	HASH_MAP<T, int> ans;
 	const T remember = a;
 
 	T i = 2;
@@ -123,7 +123,7 @@ extern inline std::map<T, int> st_del_sort(T a) // разложение числ
 template <typename T>
 extern inline size_t amount_of_del(T a) // кол-во делителей
 {
-	hash_map<T, int> del(std::move(st_del(a)));
+	HASH_MAP<T, int> del(std::move(st_del(a)));
 
 	size_t ans = 1;
 
@@ -136,7 +136,7 @@ extern inline size_t amount_of_del(T a) // кол-во делителей
 template <typename T>
 extern inline size_t sum_del(T a) // сумма делителей
 {
-	hash_map<T, int> del(std::move(st_del(a)));
+	HASH_MAP<T, int> del(std::move(st_del(a)));
 
 	size_t ans = 1;
 
@@ -154,7 +154,7 @@ extern inline size_t sum_del(T a) // сумма делителей
 }
 
 template <typename T>
-std::set<T> eratosfen(T a) // все простые числа от 1 до a
+extern inline std::set<T> eratosfen(T a) // все простые числа от 1 до a
 {
 	std::set<T> ans;
 
@@ -178,8 +178,9 @@ std::set<T> eratosfen(T a) // все простые числа от 1 до a
  Теорема Эйлера: a^q(m) % m == 1 (q(m) - ф. Эйлера)
  Малая Теорема Ферма: a^(p - 1) % p == 1 (где p - простое)
  */
+ 
 template <typename T>
-T phi (T n)
+extern inline T phi (T n)
 {
 	T res = n;
 
