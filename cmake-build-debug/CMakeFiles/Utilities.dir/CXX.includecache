@@ -1,0 +1,24 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+F:/PROGRAMMING/C++/Utilities/NumTheory.h
+algorithm
+-
+unordered_map
+-
+set
+-
+map
+-
+
+F:/PROGRAMMING/C++/Utilities/main.cpp
+cstdio
+-
+NumTheory.h
+F:/PROGRAMMING/C++/Utilities/NumTheory.h
+
