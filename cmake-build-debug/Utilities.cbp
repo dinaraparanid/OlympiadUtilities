@@ -80,7 +80,16 @@
 				</MakeCommands>
 			</Target>
 		</Build>
+		<Unit filename="F:/PROGRAMMING/C++/Utilities/DataStructs.h">
+			<Option target="Utilities"/>
+		</Unit>
+		<Unit filename="F:/PROGRAMMING/C++/Utilities/Kombinatorics.h">
+			<Option target="Utilities"/>
+		</Unit>
 		<Unit filename="F:/PROGRAMMING/C++/Utilities/NumTheory.h">
+			<Option target="Utilities"/>
+		</Unit>
+		<Unit filename="F:/PROGRAMMING/C++/Utilities/Sort.h">
 			<Option target="Utilities"/>
 		</Unit>
 		<Unit filename="F:/PROGRAMMING/C++/Utilities/main.cpp">

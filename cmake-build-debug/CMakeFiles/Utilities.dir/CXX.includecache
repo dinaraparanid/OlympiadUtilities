@@ -6,12 +6,32 @@
 
 #IncludeRegexTransform: 
 
+F:/PROGRAMMING/C++/Utilities/DataStructs.h
+vector
+-
+exception
+-
+string
+-
+
+F:/PROGRAMMING/C++/Utilities/Kombinatorics.h
+vector
+-
+
 F:/PROGRAMMING/C++/Utilities/NumTheory.h
 algorithm
 -
 unordered_map
 -
+unordered_set
+-
 set
+-
+map
+-
+
+F:/PROGRAMMING/C++/Utilities/Sort.h
+vector
 -
 map
 -
@@ -21,4 +41,10 @@ cstdio
 -
 NumTheory.h
 F:/PROGRAMMING/C++/Utilities/NumTheory.h
+DataStructs.h
+F:/PROGRAMMING/C++/Utilities/DataStructs.h
+Sort.h
+F:/PROGRAMMING/C++/Utilities/Sort.h
+Kombinatorics.h
+F:/PROGRAMMING/C++/Utilities/Kombinatorics.h
 
