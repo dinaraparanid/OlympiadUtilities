@@ -1,5 +1,4 @@
-#pragma once
-
+#pragma once 
 #include <vector>
 #include <exception>
 #include <string>
@@ -124,7 +123,7 @@ template <typename T> class SegmentTree
 		build(1, 0, last_ - 1);
 	}
 
-	__forceinline void rebuild (const std::vector<T>& _vec, size_t new_size, STOrder _order)
+	__forceinline void rebuild (const std::vector<T>& _vec, STOrder _order)
 	{
 		constructor_ = _vec;
 		last_ = _vec.size();
@@ -133,16 +132,18 @@ template <typename T> class SegmentTree
 		builder_.assign(last_ << 2, 0);
 		build(1, 0, last_ - 1);
 	}
+	
+	// перегрузка для нахождения
+	// rmq(_i, _j) для всего дерева
 
-	__forceinline T rmq (size_t _i, size_t _q) {
+	__forceinline T rmq (size_t _i, size_t _q) 
+	{
 		if (_q >= constructor_.size())
 			throw std::out_of_range("Second index out of range");
 		if (_i > _q)
 			throw std::range_error("First index > Second index");
 		return rmq(1, 0, last_ - 1, _i, _q);
 	}
-	// перегрузка для нахождения
-	// rmq(_i, _j) для всего дерева
 };
 
 /**
