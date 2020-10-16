@@ -1,5 +1,4 @@
 #pragma once
-
 #include <algorithm>
 #include <unordered_map>
 #include <unordered_set>
@@ -7,7 +6,7 @@
 #include <map>
 
 template <typename T>
-extern inline void numsFastSwap(T& a, T& b) // для чисел использовать это (быстрее, чем std::swap)
+extern inline void numsFastSwap(T& a, T& b) // для чисел использовать это (быстрее, чем std::swap())
 {
 	a ^= b;
 	b ^= a;
@@ -21,7 +20,7 @@ extern inline uint64_t lcm(T a, T b)  // НОК
 }
 
 template <typename T>
-extern inline T mod(T a, T b) // Математический остаток (> 0)
+extern inline T mod(T a, T b) // Математический остаток (>= 0)
 {
 	return ((a % b + b) % b);
 }
@@ -29,7 +28,7 @@ extern inline T mod(T a, T b) // Математический остаток (> 
 template <typename T>
 extern inline T gcdExt(T a, T b, T& x, T& y) // расширенный алг. Эвклида (для диофантовых ур.)
 {
-	if (b == 0)
+	if (!b)
 	{
 		x = 1;
 		y = 0;
@@ -40,7 +39,6 @@ extern inline T gcdExt(T a, T b, T& x, T& y) // расширенный алг. �
 	x -= (a / b) * y;
 
 	nums_fast_swap(x, y);
-
 	return d;
 }
 
@@ -191,7 +189,7 @@ extern inline uint64_t sumDel(T a) // сумма делителей
 }
 
 template <typename T>
-extern inline std::set<T> eratosfen(T a) // все простые числа от 1 до a
+extern inline std::set<T> eratosfen(T a) // все простые числа от 1 до a включительно
 {
 	std::set<T> ans;
 
