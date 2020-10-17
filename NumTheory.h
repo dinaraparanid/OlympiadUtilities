@@ -6,7 +6,7 @@
 #include <map>
 
 template <typename T>
-extern inline void numsFastSwap(T& a, T& b) // для чисел использовать это (быстрее, чем std::swap())
+extern inline void numsFastSwap(T& a, T& b) // для чисел использовать это (БЫСТРЕЕ, ЧЕМ std::swap())
 {
 	a ^= b;
 	b ^= a;
@@ -44,7 +44,7 @@ extern inline T gcdExt(T a, T b, T& x, T& y) // расширенный алг. �
 
 template <typename N, typename S>
 extern inline int64_t binPow (N a, S n) // быстрое возведение в степень O(log(n))
-{
+{                                       // ЮЗАТЬ ЭТО ВМЕСТО (std::pow()), ОНА БЫСТРЕЕ
 	if (a == 2) return 1 << n;
 	if (a == 1) return 1;
 	if (a == 0) return 0;
@@ -90,7 +90,7 @@ extern inline std::unordered_set<T> del(T a) // делители числа (Н�
 }
 
 template <typename T>
-extern inline std::set<T> delSort(T a) // делители числа (сортир)
+extern inline std::set<T> delSort(T a) // делители числа (СОРТИРОВАНЫ)
 {
 	std::set<T> ans;
 
@@ -134,7 +134,7 @@ extern inline std::unordered_map<T, int> stDel(T a) // разложение чи
 }
 
 template <typename T>
-extern inline std::map<T, int> stDelSort(T a) // разложение числа на простые (сортир)
+extern inline std::map<T, int> stDelSort(T a) // разложение числа на простые (СОРТИРОВАНЫ)
 {
 	std::map<T, int> ans;
 	const T remember = a;
