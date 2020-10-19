@@ -1,15 +1,14 @@
 #pragma once
-
-#include <vector>
 #include <map>
+#include <vector>
 
 // Для qsort() из C
 
 template <typename T>
-extern inline int qsortCmp (const void* a, const void* b)
+constexpr int qsort_cmp(const void* a, const void* b)
 {
-	const T arg1 = *(const T*)a;
-	const T arg2 = *(const T*)b;
+	const T arg1 = *static_cast<const T*>(a);
+	const T arg2 = *static_cast<const T*>(b);
 
 	if (arg1 < arg2) return -1;
 	if (arg1 > arg2) return 1;
@@ -20,8 +19,8 @@ extern inline int qsortCmp (const void* a, const void* b)
 
 template <typename T> class Cmp
 {
- public:
-	__forceinline bool operator() (T a, T b) const
+public:
+	constexpr bool operator() (const T a, const T b) const
 	{
 		return false;
 		// код для сравнения
@@ -31,12 +30,12 @@ template <typename T> class Cmp
 // Сортировка подсчётом
 
 template <typename T>
-extern inline void countSort(std::vector<T>& arr)
+constexpr void count_sort(std::vector<T>& arr)
 {
 	std::map<T, size_t> cnt;
 
 	for (auto i : arr)
-		cnt[i]++;
+		++cnt[i];
 
 	size_t ind = 0;
 
