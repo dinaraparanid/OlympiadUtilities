@@ -14,19 +14,19 @@ constexpr void nums_fast_swap(T& a, T& b) // для чисел использо�
 }
 
 template <typename T>
-constexpr uint64_t lcm(T a, T b)  // НОК
+constexpr uint64_t lcm(const T a, const T b)  // НОК
 {
 	return a / std::__gcd(a, b) * b;
 }
 
 template <typename T>
-constexpr T mod(T a, T b) // Математический остаток (>= 0)
+constexpr T mod(const T a, const T b) // Математический остаток (>= 0)
 {
 	return ((a % b + b) % b);
 }
 
 template <typename T>
-constexpr T gcd_ext(T a, T b, T& x, T& y) // расширенный алг. Эвклида (для диофантовых ур.)
+constexpr T gcd_ext(const T a, const T b, T& x, T& y) // расширенный алг. Эвклида (для диофантовых ур.)
 {
 	if (!b)
 	{
@@ -68,7 +68,7 @@ constexpr int64_t bin_pow(N a, S n) // быстрое возведение в с
 }
 
 template <typename T>
-constexpr std::unordered_set<T> del(T a) // делители числа (НЕ СОРТИРОВАНЫ)
+constexpr std::unordered_set<T> del(const T a) // делители числа (НЕ СОРТИРОВАНЫ)
 {
 	std::unordered_set<T> ans;
 
@@ -90,7 +90,7 @@ constexpr std::unordered_set<T> del(T a) // делители числа (НЕ С
 }
 
 template <typename T>
-constexpr std::set<T> del_sort(T a) // делители числа (СОРТИРОВАНЫ)
+constexpr std::set<T> del_sort(const T a) // делители числа (СОРТИРОВАНЫ)
 {
 	std::set<T> ans;
 
@@ -156,7 +156,7 @@ constexpr std::map<T, int> st_del_sort(T a) // разложение числа �
 }
 
 template <typename T>
-constexpr uint64_t amount_of_del(T a) // кол-во делителей
+constexpr uint64_t amount_of_del(const T a) // кол-во делителей
 {
 	std::unordered_map<T, int> del(std::move(st_del(a)));
 
@@ -169,7 +169,7 @@ constexpr uint64_t amount_of_del(T a) // кол-во делителей
 }
 
 template <typename T>
-constexpr uint64_t sum_del(T a) // сумма делителей
+constexpr uint64_t sum_del(const T a) // сумма делителей
 {
 	std::unordered_map<T, int> del(std::move(st_del(a)));
 
@@ -189,7 +189,7 @@ constexpr uint64_t sum_del(T a) // сумма делителей
 }
 
 template <typename T>
-constexpr std::set<T> eratosfen(T a) // все простые числа от 1 до a включительно
+constexpr std::set<T> eratosfen(const T a) // все простые числа от 1 до a включительно
 {
 	std::set<T> ans;
 
@@ -231,19 +231,19 @@ constexpr uint64_t phi(T n)
 }
 
 template <typename T>
-constexpr uint64_t arif_prog_step1(T a, T b) // арифметическая прогрессия с шагом 1
+constexpr uint64_t arif_prog_step1(const T a, const T b) // арифметическая прогрессия с шагом 1
 {
 	return (a + b) * (b - a + 1) / 2;
 }
 
 template <typename T>
-constexpr int64_t arif_prog(T a, uint64_t n, const int64_t mov) // арифметическая прогрессия
+constexpr int64_t arif_prog(const T a, const uint64_t n, const int64_t mov) // арифметическая прогрессия
 {
 	return (2ll * a + mov * (n - 1)) * n / 2;
 }
 
 template <typename T>
-constexpr int64_t geom_prog(T a, const uint64_t n, const int64_t mov)  // геом. прогрессия
+constexpr int64_t geom_prog(const T a, const uint64_t n, const int64_t mov)  // геом. прогрессия
 {
 	return mov == 1 ? a : a * (bin_pow(mov, n) - 1) / (mov - 1);
 }
