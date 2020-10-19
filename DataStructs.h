@@ -1,6 +1,6 @@
-#pragma once 
+#pragma once
 #include <vector>
-#include <exception>
+#include <stdexcept>
 #include <string>
 
 /**
@@ -24,14 +24,14 @@ enum STOrder
 
 template <typename T> class SegmentTree
 {
- private:
+private:
 	size_t last_; // размер
 	std::vector<T> builder_; // то, где поддерживаем rmq
 	std::vector<T> constructor_; // первоначальный вектор
 	STOrder order_; // выбор поиска (минимум или максимум)
 
-	static __forceinline T left(T _p) { return _p << 1; } // левая ветвь
-	static __forceinline T right(T _p) { return (_p << 1) + 1; }  // правая ветвь
+	static constexpr T left(const T _p) { return _p << 1; } // левая ветвь
+	static constexpr T right(const T _p) { return (_p << 1) + 1; }  // правая ветвь
 
 	/**
 	Построение дерева отрезков (сегментов).
@@ -40,7 +40,7 @@ template <typename T> class SegmentTree
 	@param _r - текущий индекс вправо
 	*/
 
-	void build (T _p, size_t _l, size_t _r)
+	void build(const T _p, const size_t _l, const size_t _r)
 	{
 		if (_l == _r)
 			builder_[_p] = _l; // дошли до листа
@@ -71,7 +71,7 @@ template <typename T> class SegmentTree
 	@return rmq(_i, _j) в ЧАСТИ дерева
 	*/
 
-	T rmq (T _p, size_t _l, size_t _r, size_t _i, size_t _j)
+	T rmq(const T _p, const size_t _l, const size_t _r, const size_t _i, const size_t _j)
 	{
 		if (_i > _r || _j < _l)  // если вышли за границу
 			return -1;
@@ -81,8 +81,8 @@ template <typename T> class SegmentTree
 
 		// считаем rmq справа и слева
 
-		T p1 = rmq(left(_p), _l, (_l + _r) >> 1, _i, _j);
-		T p2 = rmq(right(_p), ((_l + _r) >> 1) + 1, _r, _i, _j);
+		const T p1 = rmq(left(_p), _l, (_l + _r) >> 1, _i, _j);
+		const T p2 = rmq(right(_p), ((_l + _r) >> 1) + 1, _r, _i, _j);
 
 		if (p1 == -1) return p2;
 		if (p2 == -1) return p1;
@@ -95,14 +95,14 @@ template <typename T> class SegmentTree
 			return (constructor_[p1] <= constructor_[p2] ? p1 : p2);
 	}
 
- public:
+public:
 
 	/**
 	Конструктор для дерева отрезков.
 	@param _vec - вектор, для которого нужно найти rmq
 	*/
 
-	SegmentTree (const std::vector<T>& _vec, STOrder _order)
+	constexpr SegmentTree(const std::vector<T>& _vec, const STOrder _order)
 	{
 		constructor_ = _vec;
 		last_ = _vec.size();
@@ -117,13 +117,13 @@ template <typename T> class SegmentTree
 	@param _vec - новый вектор
 	*/
 
-	__forceinline void rebuild (const std::vector<T>& _vec)
+	constexpr void rebuild(const std::vector<T>& _vec)
 	{
 		constructor_ = _vec;
 		build(1, 0, last_ - 1);
 	}
 
-	__forceinline void rebuild (const std::vector<T>& _vec, STOrder _order)
+	constexpr void rebuild(const std::vector<T>& _vec, const STOrder _order)
 	{
 		constructor_ = _vec;
 		last_ = _vec.size();
@@ -132,11 +132,11 @@ template <typename T> class SegmentTree
 		builder_.assign(last_ << 2, 0);
 		build(1, 0, last_ - 1);
 	}
-	
+
 	// перегрузка для нахождения
 	// rmq(_i, _j) для всего дерева
 
-	__forceinline T rmq (size_t _i, size_t _q) 
+	constexpr T rmq(const size_t _i, const size_t _q)
 	{
 		if (_q >= constructor_.size())
 			throw std::out_of_range("Second index out of range");
@@ -155,7 +155,7 @@ vec2[i + 1] - vec2[q] // сумма от включительно q до i вк�
 */
 
 template <typename T>
-extern inline std::vector<int64_t> sumArr(const std::vector<T>& arr)
+constexpr std::vector<int64_t> sum_arr(const std::vector<T>& arr)
 {
 	std::vector<int64_t> ans(arr.size() + 1);
 	ans[0] = 0;
@@ -179,7 +179,7 @@ assert(vec, ["ABCDABCD", "BCDABCD", "CDABCD", "DABCD", ...]
 */
 
 template <typename T>
-extern inline std::vector<std::string> sufArrayStr(const std::string& str)
+constexpr std::vector<std::string> suf_array_str(const std::string& str)
 {
 	std::vector<std::string> suf_arr(str.size());
 
@@ -202,7 +202,7 @@ assert(vec, ["ABCDABCD", "ABCDABC", "ABCDAB", "ABCDA", ...]
 */
 
 template <typename T>
-extern inline std::vector<std::string> prefArrayStr(const std::string& str)
+constexpr std::vector<std::string> pref_array_str(const std::string& str)
 {
 	const size_t siz = str.size();
 	std::vector<std::string> suf_arr(siz);
