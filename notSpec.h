@@ -13,8 +13,8 @@
 
 int main()
 {
-  // ищем 3 среди множества от 0 до 10
-	std::printf("%d", bin_search<int>(0, 10,[](const int a) {
+  	// ищем 3 среди множества от 0 до 10
+	std::printf("%d", bin_search<int>(0, 10, [](const int a) {
 	  if (a > 3) return 1;
 	  if (a < 3) return -1;
 	  return 0;
@@ -23,7 +23,7 @@ int main()
 }
 */
 
-template <typename T> T bin_search(T a, T b, std::function<int(const T)> fn, double cnst = 1)
+template <typename T> constexpr T bin_search(T a, T b, std::function<int(const T)> fn, double cnst = 1)
 {
 	T start = a, finish = b;
 
