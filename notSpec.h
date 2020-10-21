@@ -14,7 +14,7 @@
 int main()
 {
   	// ищем 3 среди множества от 0 до 10
-	std::printf("%d", bin_search<int>(0, 10, [](const int a) { return a; }));
+	std::printf("%d", bin_search<int>(0, 10, 3 [](const int a) { return a; }));
 	return 0;
 }
 */
