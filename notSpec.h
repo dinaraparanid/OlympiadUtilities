@@ -19,7 +19,7 @@ int main()
 }
 */
 
-template <typename T> constexpr T bin_search (const T a, const T b, const T check, const T cnst = 1, std::function<int(const T)> fn)
+template <typename T> constexpr T bin_search (const T a, const T b, const T check, const T cnst = 1, std::function<T(const T)> fn)
 {
 	T start = a, finish = b;
 
