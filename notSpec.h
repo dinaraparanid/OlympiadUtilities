@@ -14,34 +14,26 @@
 int main()
 {
   	// ищем 3 среди множества от 0 до 10
-	std::printf("%d", bin_search<int>(0, 10, [](const int a) {
-	  if (a > 3) return 1;
-	  if (a < 3) return -1;
-	  return 0;
-	}));
+	std::printf("%d", bin_search<int>(0, 10, [](const int a) { return a; }));
 	return 0;
 }
 */
 
-template <typename T> constexpr T bin_search (const T a, const T b, std::function<int(const T)> fn, const T cnst = 1)
+template <typename T> constexpr T bin_search (const T a, const T b, const T check, std::function<int(const T)> fn, const T cnst = 1)
 {
 	T start = a, finish = b;
 
 	while (finish - start > cnst)
 	{
 		const T middle = (start + finish) / 2;
+                const T res = fn(middle);
 
-		switch (fn(middle))
-		{
-		case 1:
+		if (res - check < cnst)
 			finish = middle;
-			break;
-		case -1:
+		else if (res - check > cnst)
 			start = middle;
-			break;
-		default:
-			return middle;
-		}
+		else
+		        return middle;
 	}
 
 	return start;
