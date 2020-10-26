@@ -3,30 +3,27 @@
 #include <string>
 #include <vector>
 
-/**
-Префиксная функция
-*/
+// Префиксная функция
 
-std::vector<int> pref (std::string& s)
+std::vector<size_t> pref(const std::string& s)
 {
-	std::vector<int> p(s.size(), 0);
+	std::vector<size_t> p(s.size(), 0);
 	size_t cur = 0;
-	
-	for (size_t i = 0; i < p.size(); i++)
+
+	for (size_t i = 1; i < p.size(); i++)
 	{
-		BREAK:
+	BREAK:
 		cur = p[i - 1];
 
 		while (s[cur] != s[i])
 		{
 			if (cur == 0)
 			{
-				p[i] = 0;
-				i++;
+				p[i++] = 0;
 
-				if (i == p.size()) 
+				if (i == p.size())
 					return p;
-				else 
+				else
 					goto BREAK;
 			}
 
