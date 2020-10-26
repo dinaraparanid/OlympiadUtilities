@@ -4,10 +4,10 @@
 
 extern inline std::vector<size_t> prefix_function(const std::string& s)
 {
-	const size_t n = s.length();
-	std::vector<size_t> pi(n);
+	const size_t size = s.length();
+	std::vector<size_t> pi(size);
 	
-	for (size_t i = 1; i < n; ++i) 
+	for (size_t i = 1; i < size; ++i) 
 	{
 		int j = pi[i - 1];
 		
