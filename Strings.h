@@ -1,84 +1,42 @@
 #pragma once
-
 #include <string>
 #include <vector>
 
-// Префиксная функция
-
-std::vector<size_t> pref(const std::string& s)
+extern inline std::vector<size_t> prefix_function(const std::string& s)
 {
-	std::vector<size_t> p(s.size(), 0);
-	size_t cur = 0;
-
-	for (size_t i = 1; i < p.size(); i++)
+	const size_t n = s.length();
+	std::vector<size_t> pi(n);
+	
+	for (size_t i = 1; i < n; ++i) 
 	{
-	BREAK:
-		cur = p[i - 1];
-
-		while (s[cur] != s[i])
-		{
-			if (cur == 0)
-			{
-				p[i++] = 0;
-
-				if (i == p.size())
-					return p;
-				else
-					goto BREAK;
-			}
-
-			cur = p[cur - 1];
-		}
-
-		p[i] = cur + 1;
+		int j = pi[i - 1];
+		
+		while (j > 0 && s[i] != s[j])
+			j = pi[j - 1];
+		
+		if (s[i] == s[j])  ++j;
+		pi[i] = j;
 	}
-
-	return p;
+	
+	return pi;
 }
 
-// Z-функция
-
-std::vector<size_t> z_func(const std::string& str)
+extern inline std::vector<size_t> z_function(const std::string& s)
 {
-	const size_t len = str.size();
-	std::vector<size_t> z(len);
-
-	if (0 == len)
-		return z;
-
-	z[0] = len;
-
-	for (size_t cur = 1, left = 0, right = 1; cur < len; ++cur)
+	const size_t size = s.length();
+	std::vector<size_t> z(size);
+	
+	for (size_t i = 1, l = 0, r = 0; i < size; i++) 
 	{
-		if (cur >= right)
-		{
-			size_t off = 0;
-			while (cur + off < len && str[cur + off] == str[off])
-				++off;
-
-			z[cur] = off;
-			right = cur + z[cur];
-			left = cur;
-		}
-
-		else
-		{
-			const size_t equiv = cur - left;
-
-			if (z[equiv] < right - cur)
-				z[cur] = z[equiv];
-
-			else
-			{
-				size_t off = 0;
-				while (right + off < len && str[right - cur + off] == str[right + off])
-					++off;
-				z[cur] = right - cur + off;
-				right += off;
-				left = cur;
-			}
-		}
+		if (i <= r)
+			z[i] = std::min(r - i + 1, z[i - l]);
+		
+		while (i + z[i] < size && s[z[i]] == s[i + z[i]])
+			z[i]++;
+		
+		if (i + z[i] - 1 > r)
+			l = i, r = i + z[i] - 1;
 	}
-
+	
 	return z;
 }
