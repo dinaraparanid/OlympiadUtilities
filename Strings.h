@@ -51,11 +51,11 @@ extern inline std::pair<std::vector<int>, std::vector<int>> manaker(const std::s
 
 	int l = 0, r = -1;
 
-	for (int i = 0; i < size; ++i)
+	for (int i = 0; i < size; i++)
 	{
 		int k = i >= r ? 1 : std::min(d1[l + r - i], r - i + 1);
 
-		while (i + k < size && i - k >= 0 && s[i + k] == s[i - k])  ++k;
+		while (i + k < size && i - k >= 0 && s[i + k] == s[i - k])  k++;
 
 		d1[i] = k;
 
@@ -67,11 +67,11 @@ extern inline std::pair<std::vector<int>, std::vector<int>> manaker(const std::s
 
 	l = 0, r = -1;
 
-	for (int i = 0; i < size; ++i)
+	for (int i = 0; i < size; i++)
 	{
 		int k = i > r ? 0 : std::min(d2[l + r - i + 1], r - i + 1);
 
-		while (i + k < size && i - k - 1 >= 0 && s[i + k] == s[i - k - 1])  ++k;
+		while (i + k < size && i - k - 1 >= 0 && s[i + k] == s[i - k - 1]) k++;
 
 		d2[i] = k;
 
