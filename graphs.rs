@@ -33,7 +33,7 @@ impl Graph for MatrixGraph {
     ///
     ///     0
     ///   /  \
-    /// 1 —  2
+    ///  1 —  2
 
     fn new(vertices: usize, edges: usize) -> Self {
         let mut graph = vec![vec![false; vertices]; vertices];
