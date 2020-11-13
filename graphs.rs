@@ -168,3 +168,4 @@ fn matrix_from_bfs_display_test() {
 
     assert_eq!(vec![0, 1, 2, 2, 3, 3, INF, INF, INF], graph.bfs(0));
 }
+
