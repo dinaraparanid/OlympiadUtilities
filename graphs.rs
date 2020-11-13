@@ -109,14 +109,33 @@ impl Graph for MatrixGraph {
     }
 }
 
-/// Constructor from another matrix
-/// It moves matrix
+/// Constructor from another boolean matrix
 
 impl From<Vec<Vec<bool>>> for MatrixGraph {
     fn from(graph: Vec<Vec<bool>>) -> Self {
         MatrixGraph {
             visited: vec![false; graph.len()],
             gr: graph,
+        }
+    }
+}
+
+/// Constructor from another integer matrix
+/// If elem >= 1 -> 1
+/// else -> 0
+
+impl From<Vec<Vec<i32>>> for MatrixGraph {
+    fn from(graph: Vec<Vec<i32>>) -> Self {
+        MatrixGraph {
+            visited: vec![false; graph.len()],
+            gr: graph
+                .iter()
+                .map(|x| {
+                    x.iter()
+                        .map(|y| if *y == 0 { return false } else { return true })
+                        .collect::<Vec<bool>>()
+                })
+                .collect::<Vec<Vec<bool>>>(),
         }
     }
 }
@@ -167,5 +186,22 @@ fn matrix_from_bfs_display_test() {
     );
 
     assert_eq!(vec![0, 1, 2, 2, 3, 3, INF, INF, INF], graph.bfs(0));
-}
 
+    assert_eq!(
+        format!("{}", graph),
+        format!(
+            "{}",
+            MatrixGraph::from(vec![
+                vec![0, 1, 0, 0, 0, 0, 0, 0, 0],
+                vec![1, 0, 1, 1, 0, 0, 0, 0, 0],
+                vec![0, 1, 0, 0, 0, 0, 0, 0, 0],
+                vec![0, 1, 0, 0, 1, 1, 0, 0, 0],
+                vec![0, 0, 0, 1, 0, 1, 0, 0, 0],
+                vec![0, 0, 0, 1, 1, 0, 0, 0, 0],
+                vec![0, 0, 0, 0, 0, 0, 0, 1, 0],
+                vec![0, 0, 0, 0, 0, 0, 1, 0, 1],
+                vec![0, 0, 0, 0, 0, 0, 0, 1, 0],
+            ])
+        )
+    );
+}
