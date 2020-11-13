@@ -121,8 +121,8 @@ impl From<Vec<Vec<bool>>> for MatrixGraph {
 }
 
 /// Constructor from another integer matrix
-/// If elem >= 1 -> 1
-/// else -> 0
+/// If elem == 0 -> false
+/// else -> true (2 and bigger are also accepted)
 
 impl From<Vec<Vec<i32>>> for MatrixGraph {
     fn from(graph: Vec<Vec<i32>>) -> Self {
@@ -132,8 +132,8 @@ impl From<Vec<Vec<i32>>> for MatrixGraph {
                 .iter()
                 .map(|x| {
                     x.iter()
-                        .map(|y| if *y == 0 { return false } else { return true })
-                        .collect::<Vec<bool>>()
+                     .map(|y| return *y > 0;)
+                     .collect::<Vec<bool>>()
                 })
                 .collect::<Vec<Vec<bool>>>(),
         }
