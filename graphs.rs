@@ -1,4 +1,5 @@
 use std::collections::VecDeque;
+use std::fmt::{Display, Formatter};
 
 const INF: u32 = std::u32::MAX;
 
@@ -81,7 +82,7 @@ impl Graph for MatrixGraph {
                 unsafe {
                     if *self.gr.get_unchecked(u).get_unchecked(j) && *length.get_unchecked(j) == INF
                     {
-                        *length.get_unchecked_mut(j) = *length.get_unchecked(j) + 1;
+                        *length.get_unchecked_mut(j) = *length.get_unchecked(u) + 1;
                         queue.push_back(j);
                     }
                 }
@@ -118,4 +119,52 @@ impl From<Vec<Vec<bool>>> for MatrixGraph {
             gr: graph,
         }
     }
+}
+
+/// Display trait helps us to print out matrix
+
+impl Display for MatrixGraph {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        let mut out = String::new();
+
+        for vec in &self.gr {
+            for elem in vec {
+                out.push_str(if let true = *elem { "1 " } else { "0 " });
+            }
+
+            out.push('\n');
+        }
+
+        write!(f, "{}", out)
+    }
+}
+
+#[test]
+fn matrix_from_bfs_display_test() {
+    let mut graph = MatrixGraph::from(vec![
+        vec![false, true, false, false, false, false, false, false, false],
+        vec![true, false, true, true, false, false, false, false, false],
+        vec![false, true, false, false, false, false, false, false, false],
+        vec![false, true, false, false, true, true, false, false, false],
+        vec![false, false, false, true, false, true, false, false, false],
+        vec![false, false, false, true, true, false, false, false, false],
+        vec![false, false, false, false, false, false, false, true, false],
+        vec![false, false, false, false, false, false, true, false, true],
+        vec![false, false, false, false, false, false, false, true, false],
+    ]);
+
+    assert_eq!(
+        format!("{}", graph),
+        "0 1 0 0 0 0 0 0 0 \n\
+        1 0 1 1 0 0 0 0 0 \n\
+        0 1 0 0 0 0 0 0 0 \n\
+        0 1 0 0 1 1 0 0 0 \n\
+        0 0 0 1 0 1 0 0 0 \n\
+        0 0 0 1 1 0 0 0 0 \n\
+        0 0 0 0 0 0 0 1 0 \n\
+        0 0 0 0 0 0 1 0 1 \n\
+        0 0 0 0 0 0 0 1 0 \n"
+    );
+
+    assert_eq!(vec![0, 1, 2, 2, 3, 3, INF, INF, INF], graph.bfs(0));
 }
