@@ -30,8 +30,8 @@ constexpr T gcd_ext(const T a, const T b, T& x, T& y) // расширенный 
 {
 	if (!b)
 	{
-		x = 0;
-		y = 1;
+		x = 1;
+		y = 0;
 		return a;
 	}
 
