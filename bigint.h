@@ -5,13 +5,14 @@
 #include <sstream>
 #include <vector>
 
-const int maxn = 1e2 + 14, lg = 15;
-const int base = 1000000000;
-const int base_digits = 9;
+constexpr int maxn = 1e2 + 14, lg = 15;
+constexpr int base = 1000000000;
+constexpr int base_digits = 9;
 using vll = std::vector<long long>;
 
 class bigint
 {
+	
 	std::vector<int> a_;
 	int sign_{};
 
@@ -19,8 +20,8 @@ class bigint
 	{
 		const int norm = base / (b1.a_.back() + 1);
 
-		bigint a = a1.abs() * norm;
-		bigint b = b1.abs() * norm;
+		const bigint a = a1.abs() * norm;
+		const bigint b = b1.abs() * norm;
 		bigint q, r;
 
 		q.a_.resize(a.a_.size());
@@ -32,7 +33,7 @@ class bigint
 
 			const int s1 = r.a_.size() <= b.a_.size() ? 0 : r.a_[b.a_.size()];
 			const int s2 = r.a_.size() <= b.a_.size() - 1 ? 0 : r.a_[b.a_.size() - 1];
-			auto d = (static_cast<long long>(base) * s1 + s2) / b.a_.back();
+			auto d = (1LL * base * s1 + s2) / b.a_.back();
 
 			r -= b * d;
 
@@ -51,50 +52,51 @@ class bigint
 
 	static vll karatsuba_multiply(const vll& a, const vll& b)
 	{
-		const int n = a.size();
+		const size_t n = a.size();
 		vll res(n + n);
 
 		if (n <= 32)
 		{
-			for (int i = 0; i < n; i++)
-				for (int j = 0; j < n; j++)
+			for (size_t i = 0; i < n; i++)
+				for (size_t j = 0; j < n; j++)
 					res[i + j] += a[i] * b[j];
 
 			return res;
 		}
 
-		const int k = n >> 1;
+		const size_t k = n >> 1;
 
-		vll a1(a.begin(), a.begin() + k);
+		const vll a1(a.begin(), a.begin() + k);
+		const vll b1(b.begin(), b.begin() + k);
+		
 		vll a2(a.begin() + k, a.end());
-		vll b1(b.begin(), b.begin() + k);
 		vll b2(b.begin() + k, b.end());
 
-		vll a1b1 = karatsuba_multiply(a1, b1);
-		vll a2b2 = karatsuba_multiply(a2, b2);
+		const vll a1_b1 = karatsuba_multiply(a1, b1);
+		const vll a2_b2 = karatsuba_multiply(a2, b2);
 
-		for (int i = 0; i < k; i++)
+		for (size_t i = 0; i < k; i++)
 			a2[i] += a1[i];
 
-		for (int i = 0; i < k; i++)
+		for (size_t i = 0; i < k; i++)
 			b2[i] += b1[i];
 
 		vll r = karatsuba_multiply(a2, b2);
 
-		for (int i = 0; i < static_cast<int>(a1b1.size()); i++)
-			r[i] -= a1b1[i];
+		for (size_t i = 0; i < a1_b1.size(); i++)
+			r[i] -= a1_b1[i];
 
-		for (int i = 0; i < static_cast<int>(a2b2.size()); i++)
-			r[i] -= a2b2[i];
+		for (size_t i = 0; i < a2_b2.size(); i++)
+			r[i] -= a2_b2[i];
 
-		for (int i = 0; i < static_cast<int>(r.size()); i++)
+		for (size_t i = 0; i < r.size(); i++)
 			res[i + k] += r[i];
 
-		for (int i = 0; i < static_cast<int>(a1b1.size()); i++)
-			res[i] += a1b1[i];
+		for (size_t i = 0; i < a1_b1.size(); i++)
+			res[i] += a1_b1[i];
 
-		for (int i = 0; i < static_cast<int>(a2b2.size()); i++)
-			res[i + n] += a2b2[i];
+		for (size_t i = 0; i < a2_b2.size(); i++)
+			res[i + n] += a2_b2[i];
 
 		return res;
 	}
@@ -105,7 +107,7 @@ class bigint
 
 		p[0] = 1;
 
-		for (int i = 1; i < static_cast<int>(p.size()); i++)
+		for (size_t i = 1; i < p.size(); i++)
 			p[i] = p[i - 1] * 10;
 
 		std::vector<int> res;
@@ -120,13 +122,13 @@ class bigint
 
 			while (cur_digits >= new_digits)
 			{
-				res.push_back(static_cast<int>(cur % p[new_digits]));
+				res.push_back(cur % p[new_digits]);
 				cur /= p[new_digits];
 				cur_digits -= new_digits;
 			}
 		}
 
-		res.push_back(static_cast<int>(cur));
+		res.push_back(cur);
 
 		while (!res.empty() && res.back() == 0)
 			res.pop_back();
@@ -134,13 +136,40 @@ class bigint
 		return res;
 	}
 
+	void read(const std::string& s)
+	{
+		sign_ = 1;
+		a_.clear();
+		size_t pos = 0;
+
+		while (pos < s.size() && (s[pos] == '-' || s[pos] == '+'))
+		{
+			if (s[pos] == '-')
+				sign_ = -sign_;
+
+			++pos;
+		}
+
+		for (size_t i = s.size() - 1; i >= pos; i -= base_digits)
+		{
+			int x = 0;
+
+			for (size_t j = std::max(pos, i - base_digits + 1); j <= i; j++)
+				x = x * 10 + s[j] - '0';
+
+			a_.push_back(x);
+		}
+
+		trim();
+	}
+
 public:
-	int size()
+	constexpr size_t size()
 	{
 		if (a_.empty())
 			return 0;
 		
-		int ans = (a_.size() - 1) * base_digits;
+		size_t ans = (a_.size() - 1) * base_digits;
 		int ca = a_.back();
 		
 		while (ca != 0)
@@ -149,7 +178,7 @@ public:
 		return ans;
 	}
 	
-	bigint operator ^(const bigint& v) const
+	bigint operator^(const bigint& v) const
 	{
 		bigint ans = 1;
 		bigint a = *this;
@@ -163,6 +192,7 @@ public:
 			a *= a;
 			b /= 2;
 		}
+		
 		return ans;
 	}
 
@@ -197,12 +227,14 @@ public:
 		read(s);
 	}
 
-	void operator=(const bigint& v) {
+	bigint& operator=(const bigint& v)
+	{
 		sign_ = v.sign_;
 		a_ = v.a_;
+		return *this;
 	}
 
-	void operator=(long long v)
+	bigint& operator=(long long v)
 	{
 		sign_ = 1;
 		a_.clear();
@@ -212,6 +244,8 @@ public:
 		
 		for (; v > 0; v = v / base)
 			a_.push_back(v % base);
+
+		return *this;
 	}
 
 	bigint operator+(const bigint& v) const
@@ -220,14 +254,14 @@ public:
 		{
 			bigint res = v;
 
-			for (int i = 0, carry = 0; i < static_cast<int>(std::max(a_.size(), v.a_.size())) || carry != 0; ++i)
+			for (size_t i = 0, carry = 0; i < std::max(a_.size(), v.a_.size()) || carry != 0; i++)
 			{
-				if (i == static_cast<int>(res.a_.size()))
+				if (i == res.a_.size())
 					res.a_.push_back(0);
 				
-				res.a_[i] += carry + (i < static_cast<int>(a_.size()) ? a_[i] : 0);
+				res.a_[i] += carry + (i < a_.size() ? a_[i] : 0);
 				
-				carry = static_cast<int>(res.a_[i] >= base);
+				carry = res.a_[i] >= base;
 				
 				if (carry != 0)
 					res.a_[i] -= base;
@@ -247,9 +281,9 @@ public:
 			{
 				bigint res = *this;
 				
-				for (int i = 0, carry = 0; i < static_cast<int>(v.a_.size()) || carry != 0; ++i)
+				for (size_t i = 0, carry = 0; i < v.a_.size() || carry != 0; i++)
 				{
-					res.a_[i] -= carry + (i < static_cast<int>(v.a_.size()) ? v.a_[i] : 0);
+					res.a_[i] -= carry + (i < v.a_.size() ? v.a_[i] : 0);
 					
 					carry = res.a_[i] < 0;
 					
@@ -272,14 +306,14 @@ public:
 		if (v < 0)
 			sign_ = -sign_, v = -v;
 
-		for (int i = 0, carry = 0; i < static_cast<int>(a_.size()) || (carry != 0); ++i)
+		for (size_t i = 0, carry = 0; i < a_.size() || carry != 0; i++)
 		{
-			if (i == static_cast<int>(a_.size()))
+			if (i == a_.size())
 				a_.push_back(0);
 
-			const long long cur = a_[i] * static_cast<long long>(v) + carry;
-			carry = static_cast<int>(cur / base);
-			a_[i] = static_cast<int>(cur % base);
+			const auto cur = 1LL * a_[i] * v + carry;
+			carry = cur / base;
+			a_[i] = cur % base;
 		}
 		
 		trim();
@@ -303,22 +337,25 @@ public:
 			return;
 		}
 		
-		for (int i = 0, carry = 0; i < static_cast<int>(a_.size()) || carry != 0; ++i)
+		for (size_t i = 0, carry = 0; i < a_.size() || carry != 0; i++)
 		{
-			if (i == static_cast<int>(a_.size()))
+			if (i == a_.size())
 				a_.push_back(0);
 
-			const long long cur = a_[i] * static_cast<long long>(v) + carry;
+			const auto cur = 1LL * a_[i] * v + carry;
 			
-			carry = static_cast<int>(cur / base);
-			a_[i] = static_cast<int>(cur % base);
+			carry = cur / base;
+			a_[i] = cur % base;
 		}
 		
 		trim();
 	}
 
-	bigint operator*(const long long v) const {
-		return *this * v;
+	bigint operator*(const long long v) const
+	{
+		bigint res = *this;
+		res *= v;
+		return res;
 	}
 
 	bigint operator/(const bigint& v) const {
@@ -334,11 +371,11 @@ public:
 		if (v < 0)
 			sign_ = -sign_, v = -v;
 		
-		for (int i = static_cast<int>(a_.size()) - 1, rem = 0; i >= 0; --i)
+		for (auto i = 1LL * a_.size() - 1, rem = 0LL; i >= 0; i--)
 		{
-			const long long cur = a_[i] + rem * static_cast<long long>(base);
-			a_[i] = static_cast<int>(cur / v);
-			rem = static_cast<int>(cur % v);
+			const auto cur = 1LL * a_[i] + rem * base;
+			a_[i] = cur / v;
+			rem = cur % v;
 		}
 		
 		trim();
@@ -351,15 +388,15 @@ public:
 		return res;
 	}
 
-	int operator%(int v) const
+	constexpr long long operator%(int v) const
 	{
 		if (v < 0)
 			v = -v;
 		
-		int m = 0;
+		long long m = 0;
 		
-		for (int i = a_.size() - 1; i >= 0; --i)
-			m = (a_[i] + m * static_cast<long long>(base)) % v;
+		for (auto i = 1LL * a_.size() - 1; i >= 0; i--)
+			m = (a_[i] + m * 1LL * base) % (v * 1LL);
 		
 		return m * sign_;
 	}
@@ -380,7 +417,7 @@ public:
 		*this = *this / v;
 	}
 
-	bool operator<(const bigint& v) const
+	constexpr bool operator<(const bigint& v) const
 	{
 		if (sign_ != v.sign_)
 			return sign_ < v.sign_;
@@ -388,7 +425,7 @@ public:
 		if (a_.size() != v.a_.size())
 			return a_.size() * sign_ < v.a_.size() * v.sign_;
 		
-		for (int i = a_.size() - 1; i >= 0; i--)
+		for (auto i = 1LL * a_.size() - 1; i >= 0; i--)
 			if (a_[i] != v.a_[i])
 				return a_[i] * sign_ < v.a_[i] * sign_;
 		
@@ -424,7 +461,7 @@ public:
 			sign_ = 1;
 	}
 
-	[[nodiscard]] bool is_zero() const {
+	[[nodiscard]] constexpr bool is_zero() const {
 		return a_.empty() || a_.size() == 1 && !a_[0];
 	}
 
@@ -442,11 +479,11 @@ public:
 		return res;
 	}
 
-	[[nodiscard]] long long long_value() const
+	[[nodiscard]] constexpr long long long_value() const
 	{
 		long long res = 0;
 		
-		for (int i = a_.size() - 1; i >= 0; i--)
+		for (auto i = 1LL * a_.size() - 1; i >= 0; i--)
 			res = res * base + a_[i];
 		
 		return res * sign_;
@@ -458,33 +495,6 @@ public:
 	
 	friend bigint lcm(const bigint& a, const bigint& b) {
 		return a / gcd(a, b) * b;
-	}
-
-	void read(const std::string& s)
-	{
-		sign_ = 1;
-		a_.clear();
-		int pos = 0;
-		
-		while (pos < static_cast<int>(s.size()) && (s[pos] == '-' || s[pos] == '+'))
-		{
-			if (s[pos] == '-')
-				sign_ = -sign_;
-			
-			++pos;
-		}
-		
-		for (int i = s.size() - 1; i >= pos; i -= base_digits)
-		{
-			int x = 0;
-			
-			for (int j = std::max(pos, i - base_digits + 1); j <= i; j++)
-				x = x * 10 + s[j] - '0';
-			
-			a_.push_back(x);
-		}
-		
-		trim();
 	}
 
 	friend std::istream& operator>>(std::istream& stream, bigint& v)
@@ -502,7 +512,7 @@ public:
 		
 		stream << (v.a_.empty() ? 0 : v.a_.back());
 		
-		for (int i = static_cast<int>(v.a_.size()) - 2; i >= 0; --i)
+		for (auto i = 1LL * v.a_.size() - 2; i >= 0; i--)
 			stream << std::setw(base_digits) << std::setfill('0') << v.a_[i];
 		
 		return stream;
@@ -510,8 +520,8 @@ public:
 
 	bigint operator*(const bigint& v) const
 	{
-		std::vector<int> a6 = convert_base(this->a_, base_digits, 6);
-		std::vector<int> b6 = convert_base(v.a_, base_digits, 6);
+		const std::vector<int> a6 = convert_base(this->a_, base_digits, 6);
+		const std::vector<int> b6 = convert_base(v.a_, base_digits, 6);
 		
 		vll a(a6.begin(), a6.end());
 		vll b(b6.begin(), b6.end());
@@ -530,11 +540,11 @@ public:
 		bigint res;
 		res.sign_ = sign_ * v.sign_;
 		
-		for (int i = 0, carry = 0; i < static_cast<int>(c.size()); i++)
+		for (size_t i = 0, carry = 0; i < c.size(); i++)
 		{
-			const long long cur = c[i] + carry;
-			res.a_.push_back(static_cast<int>(cur % 1000000));
-			carry = static_cast<int>(cur / 1000000);
+			const auto cur = c[i] + carry;
+			res.a_.push_back(cur % 1000000);
+			carry = cur / 1000000;
 		}
 		
 		res.a_ = convert_base(res.a_, 6, base_digits);
