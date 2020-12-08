@@ -2,6 +2,8 @@
 #include <vector>
 #include <stdexcept>
 #include <string>
+#include <cstdlib>
+#include <cstdio>
 
 /**
 Хрень для нахождения максимума (минимума) от i до q.
@@ -213,3 +215,96 @@ constexpr std::vector<std::string> pref_array_str(const std::string& str)
 
 	return suf_arr;
 }
+
+class UFDS // Union Search Disjoint Set (Система Непересекающихся Множеств)
+{
+	int* p_;        	// родители
+	int* rank_;		// ранг (фиктивен)
+	int* children_;		// кол-во детей
+	int size_;		// размер
+	int amount_of_sets_; 	// кол-во множеств
+
+	void index_out_of_range(const int i) const
+	{
+		if (i >= size_)
+		{
+			std::fprintf(stderr, "Index out of range: var = %d size = %d\n", i, size_);
+			std::exit(1);
+		}
+	}
+
+public:
+	explicit UFDS(const int n) noexcept
+	{
+		size_			= n;
+		amount_of_sets_ 	= n;
+		p_			= static_cast<int*>(std::malloc(n * sizeof(int)));
+		rank_			= static_cast<int*>(std::calloc(n, sizeof(int)));
+		children_		= static_cast<int*>(std::calloc(n, sizeof(int)));
+
+		for (int i = 0; i < n; i++)
+			p_[i] = i;
+	}
+	
+	~UFDS() noexcept
+	{
+		std::free(p_);
+		std::free(rank_);
+		std::free(children_);
+	}
+
+	[[nodiscard]] int unsafe_findSet(const int i) { return p_[i] == i ? i : p_[i] = unsafe_findSet(p_[i]); }
+	[[nodiscard]] int findSet(const int i)
+	{
+		index_out_of_range(i);
+		return unsafe_findSet(i);
+	}
+	
+	[[nodiscard]] bool unsafe_isSameSet(const int i, const int j) { return findSet(i) == findSet(j); }
+	[[nodiscard]] bool isSameSet(const int i, const int j)
+	{
+		index_out_of_range(i);
+		index_out_of_range(j);
+		return findSet(i) == findSet(j);
+	}
+
+	UFDS* unsafe_unionSet(const int i, const int j)
+	{
+		if (!isSameSet(i, j))
+		{
+			amount_of_sets_--;
+			const int x = unsafe_findSet(i);
+			const int y = unsafe_findSet(j);
+
+			if (rank_[x] > rank_[y])
+				p_[y] = x, children_[x] += children_[y];
+
+			else
+			{
+				p_[x] = y;
+				children_[y] += children_[x];
+				
+				if (rank_[x] == rank_[y])
+					rank_[y]++;
+			}
+		}
+
+		return this;
+	}
+
+	UFDS* unionSet(const int i, const int j)
+	{
+		index_out_of_range(i);
+		index_out_of_range(j);
+		return unsafe_unionSet(i, j);
+	}
+
+	[[nodiscard]] int numDisjointSets() noexcept { return amount_of_sets_; }
+
+	[[nodiscard]] int unsafe_sizeOfSet(const int i) { return children_[unsafe_findSet(i)]; }
+	[[nodiscard]] int sizeOfSet(const int i)
+	{
+		index_out_of_range(i);
+		return unsafe_sizeOfSet(i);
+	}
+};
