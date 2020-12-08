@@ -220,7 +220,7 @@ class UFDS // Union Search Disjoint Set (Система Непересекающ
 {
 	int* p_;        	// родители
 	int* rank_;		// ранг (фиктивен)
-	int* children_;		// кол-во детей
+	int* children_;		// кол-во детей + он сам
 	int size_;		// размер
 	int amount_of_sets_; 	// кол-во множеств
 
@@ -240,7 +240,10 @@ public:
 		amount_of_sets_ 	= n;
 		p_			= static_cast<int*>(std::malloc(n * sizeof(int)));
 		rank_			= static_cast<int*>(std::calloc(n, sizeof(int)));
-		children_		= static_cast<int*>(std::calloc(n, sizeof(int)));
+		children_		= static_cast<int*>(std::malloc(n, sizeof(int)));
+		
+		for (int* i = children_; i != children_ + size_; i++)
+			*i = 1;
 
 		for (int i = 0; i < n; i++)
 			p_[i] = i;
