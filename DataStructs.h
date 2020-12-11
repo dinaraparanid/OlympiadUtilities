@@ -229,7 +229,10 @@ class UFDS // Union Search Disjoint Set (Система Непересекающ
 		if (i >= size_)
 		{
 			std::fprintf(stderr, "Index out of range: var = %d size = %d\n", i, size_);
-			std::exit(1);
+			std::free(p_);
+			std::free(rank_);
+			std::free(children_);
+			std::abort();
 		}
 	}
 
@@ -240,7 +243,7 @@ public:
 		amount_of_sets_ 	= n;
 		p_			= static_cast<int*>(std::malloc(n * sizeof(int)));
 		rank_			= static_cast<int*>(std::calloc(n, sizeof(int)));
-		children_		= static_cast<int*>(std::malloc(n, sizeof(int)));
+		children_		= static_cast<int*>(std::malloc(n * sizeof(int)));
 		
 		for (int* i = children_; i != children_ + size_; i++)
 			*i = 1;
