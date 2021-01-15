@@ -5,148 +5,92 @@
 #include <cstdlib>
 #include <cstdio>
 
-/**
-Хрень для нахождения максимума (минимума) от i до q.
-Тупо делай следующее:
+// Дерево отрезков
 
-SegmentTree<int> t(vec, MAX (или MIN)); // твой вектор
-vec[t.rmq(i, q)]; // макс / мин на промежутке от i до q
-*/
+constexpr int inf = 2e9 + 1;
 
-/**
-Перечисление для выбора
-максимума / минимума
-*/
-
-enum STOrder
+struct node
 {
-	MAX,
-	MIN,
+	int min;
+	int max;
+	int left;
+	int right;
+	node* child_right;
+	node* child_left;
+
+	node() = default;
+	~node()
+	{
+		delete child_left;
+		delete child_right;
+	}
 };
 
-template <typename T> class SegmentTree
+node* build(const int l, const int r, const std::vector<int>& v)
 {
-private:
-	size_t last_; // размер
-	std::vector<T> builder_; // то, где поддерживаем rmq
-	std::vector<T> constructor_; // первоначальный вектор
-	STOrder order_; // выбор поиска (минимум или максимум)
+	if (l > r)
+		return nullptr;
 
-	static constexpr T left(const T _p) { return _p << 1; } // левая ветвь
-	static constexpr T right(const T _p) { return (_p << 1) + 1; }  // правая ветвь
+	node* res = new node;
+	res->left = l;
+	res->right = r;
 
-	/**
-	Построение дерева отрезков (сегментов).
-	@param _p - текущее значение,
-	@param _l - текущий индекс влево,
-	@param _r - текущий индекс вправо
-	*/
-
-	void build(const T _p, const size_t _l, const size_t _r)
+	if (l == r)
 	{
-		if (_l == _r)
-			builder_[_p] = _l; // дошли до листа
-		else
-		{
-			build(left(_p), _l, (_l + _r) >> 1);        // строим левую ветвь
-			build(right(_p), ((_l + _r) >> 1) + 1, _r);   // строим правую ветвь
-
-			// считаем rmq для права и лева
-
-			const T p1 = builder_[left(_p)];
-			const T p2 = builder_[right(_p)];
-
-			// выбираем лучший результат
-
-			if (order_ == MAX)
-				builder_[_p] = (constructor_[p1] >= constructor_[p2] ? p1 : p2);
-			else
-				builder_[_p] = (constructor_[p1] <= constructor_[p2] ? p1 : p2);
-		}
+		res->child_left = res->child_right = nullptr;
+		res->min = res->max = v[l];
 	}
 
-	/**
-	Нахождение rmq (range maximum query).
-	@param _p - текущее значение,
-	@param _l - текущий индекс влево,
-	@param _r - текущий индекс вправо,
-	@return rmq(_i, _j) в ЧАСТИ дерева
-	*/
-
-	T rmq(const T _p, const size_t _l, const size_t _r, const size_t _i, const size_t _j)
+	else
 	{
-		if (_i > _r || _j < _l)  // если вышли за границу
-			return -1;
+		const int mid = l + r >> 1;
+		res->child_left = build(l, mid, v);
+		res->child_right = build(mid + 1, r, v);
+		res->min = std::min(res->child_left->min, res->child_right->min);
+		res->max = std::max(res->child_left->max, res->child_right->max);
+	}
+	return res;
+}
 
-		else if (_l >= _i && _r <= _j) // если попали
-			return builder_[_p];
+int query_min(node* n, const int l, const int r)
+{
+	if (l < n->left || r > n->right)
+		return inf;
 
-		// считаем rmq справа и слева
+	if (l <= n->right && r >= n->right)
+		return  n->min;
 
-		const T p1 = rmq(left(_p), _l, (_l + _r) >> 1, _i, _j);
-		const T p2 = rmq(right(_p), ((_l + _r) >> 1) + 1, _r, _i, _j);
+	return std::min(query_min(n->child_left, l, r), query_min(n->child_right, l, r));
+}
 
-		if (p1 == -1) return p2;
-		if (p2 == -1) return p1;
+int query_max(node* n, const int l, const int r)
+{
+	if (l < n->left || r > n->right)
+		return -inf;
 
-		// выбираем лучший результат
+	if (l <= n->right || r >= n->left)
+		return n->max;
 
-		if (order_ == MAX)
-			return (constructor_[p1] >= constructor_[p2] ? p1 : p2);
-		else
-			return (constructor_[p1] <= constructor_[p2] ? p1 : p2);
+	return std::max(query_max(n, l, r), query_max(n, r, l));
+}
+
+void update(node* n, const int idx, const int val)
+{
+	if (idx < n->left || idx > n->right)
+		return;
+
+	if (n->right == n->left)
+	{
+		n->min = n->max = val;
+		return;
 	}
 
-public:
+	update(n->child_left, idx, val);
+	update(n->child_right, idx, val);
 
-	/**
-	Конструктор для дерева отрезков.
-	@param _vec - вектор, для которого нужно найти rmq
-	*/
-
-	constexpr SegmentTree(const std::vector<T>& _vec, const STOrder _order)
-	{
-		constructor_ = _vec;
-		last_ = _vec.size();
-		order_ = _order;
-
-		builder_.assign(last_ << 2, 0);
-		build(1, 0, last_ - 1);
-	}
-
-	/**
-	Перестройка дерева.
-	@param _vec - новый вектор
-	*/
-
-	constexpr void rebuild(const std::vector<T>& _vec)
-	{
-		constructor_ = _vec;
-		build(1, 0, last_ - 1);
-	}
-
-	constexpr void rebuild(const std::vector<T>& _vec, const STOrder _order)
-	{
-		constructor_ = _vec;
-		last_ = _vec.size();
-		order_ = _order;
-
-		builder_.assign(last_ << 2, 0);
-		build(1, 0, last_ - 1);
-	}
-
-	// перегрузка для нахождения
-	// rmq(_i, _j) для всего дерева
-
-	constexpr T rmq(const size_t _i, const size_t _q)
-	{
-		if (_q >= constructor_.size())
-			throw std::out_of_range("Second index out of range");
-		if (_i > _q)
-			throw std::range_error("First index > Second index");
-		return rmq(1, 0, last_ - 1, _i, _q);
-	}
-};
+	n->min = std::min(n->child_left->min, n->child_right->min);
+	n->max = std::max(n->child_left->max, n->child_right->max);
+}
 
 /**
 Хрень для нахождения суммы от i до q.
